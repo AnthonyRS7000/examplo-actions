@@ -33,7 +33,7 @@
 </head>
 <body>
     <div class="welcome-container">
-        <h1>Bienvenido al examen final de evaluación de software (Actualizado)</h1>
+        <h1>Bienvenido al examen final de evaluación de software </h1>
         <p>Estamos encantados de tenerte aquí. ¡Buena suerte!</p>
     </div>
 </body>
