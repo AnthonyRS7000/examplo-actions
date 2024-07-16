@@ -10,7 +10,22 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: laravel
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
     - name: Checkout code
@@ -20,10 +35,21 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.1'
-        tools: composer
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+      run: composer install
+
+    - name: Copy .env.example to .env
+      run: cp .env.example .env
+
+    - name: Generate application key
+      run: php artisan key:generate
+
+    - name: Create a database
+      run: mysql -h 127.0.0.1 -u root -proot -e "CREATE DATABASE laravel"
+
+    - name: Run migrations
+      run: php artisan migrate
 
     - name: Run tests
       run: php artisan test
