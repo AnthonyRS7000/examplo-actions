@@ -34,7 +34,7 @@
 <body>
     <div class="welcome-container">
         <h1>Bienvenido al examen final de evaluación de software </h1>
-        <p>Estamos encantados de tenerte aquí. ¡Buena suerte!</p>
+        <p>Eperamos tener una excelente nota... Porfavorcito Inge!</p>
     </div>
 </body>
 </html>
