@@ -1,52 +1,53 @@
 name: Laravel CI/CD
 
+# Ejecuta el workflow en eventos de push y pull_request
 on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Utiliza una VM con Ubuntu
 
     services:
       mysql:
-        image: mysql:5.7
+        image: mysql:5.7 # Usa la imagen de MySQL 5.7
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: actions
         ports:
-          - 3306:3306
-        options: >-
+          - 3306:3306 # Exponer el puerto 3306
+        options: >- # Opciones para verificar la salud del contenedor
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3 # Clona el repositorio
 
     - name: Set up PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@v2 # Configura PHP
       with:
         php-version: '8.1'
-        extensions: mbstring, intl, mysql
+        extensions: mbstring, intl, mysql # Extensiones de PHP
         ini-values: post_max_size=256M, upload_max_filesize=256M
         coverage: none
 
     - name: Install Composer dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+      run: composer install --prefer-dist --no-progress --no-suggest # Instala dependencias de Composer
 
     - name: Copy .env example
-      run: cp .env.example .env
+      run: cp .env.example .env # Copia el archivo .env de ejemplo
 
     - name: Generate application key
-      run: php artisan key:generate
+      run: php artisan key:generate # Genera la clave de la aplicación
 
     - name: Set up database
       env:
         DB_PASSWORD: root
         DB_DATABASE: actions
       run: |
-        mysql -h 127.0.0.1 -u root -proot -e "CREATE DATABASE IF NOT EXISTS actions"
-        php artisan migrate --force
+        mysql -h 127.0.0.1 -u root -proot -e "CREATE DATABASE IF NOT EXISTS actions" # Crea la base de datos
+        php artisan migrate --force # Ejecuta las migraciones
 
     - name: Run tests
-      run: php artisan test
+      run: php artisan test # Ejecuta las pruebas de Laravel
